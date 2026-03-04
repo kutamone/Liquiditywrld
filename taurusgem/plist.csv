@@ -3,10 +3,10 @@ Click all Houses,1
 Press all buttons,1
 Duel John,1
 Spend zero for a week,1
-Gain money, 0
-Record a transaction, 0
+Gain money,1
+Record a transaction,1
 Win against John, 0
-Lose to John, 0
-Pay CC debt, 0
+Lose to John,1
+Pay CC debt,1
 Get a job irl, 0
-Gain five hundred bits, 0
+Gain five hundred bits,1

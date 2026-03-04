@@ -6,7 +6,7 @@ import random
 import csv
 #mine
 from tabul import dataview
-from cashview import transact, tview, tview2
+from cashview import transact, tview, tview2, finput
 from cudraw import cud
 #pandas
 import pandas as pd
@@ -78,7 +78,7 @@ def fhouse():
 	print(dataview(data[0]))
 	print(dataview(data[1]))
 	print(dataview(data[2]))
-	print("\n Projections: \n")
+	print("\n Manual Projections: \n")
 	print(dataview(data[3]))
 	tview() 
 def cardshop():
@@ -126,6 +126,161 @@ def npclines():
 	print("____________")
 	print(npcl[x] +"\n")
 	print("-------------")
+def qvshow():
+	quiz1 = []
+	pts = 0
+	with open('v.csv', 'r') as file:
+		csvr = csv.DictReader(file)
+		for row in csvr:
+			quiz1.append(row)
+	a1 = input(f"{quiz1[0]['Question']} (y/n)")
+	if a1 == 'y':
+		pts += 1
+	a2 = int(input(f"{quiz1[1]['Question']} \n: "))
+	pts += a2
+	a3 = int(input(f"{quiz1[2]['Question']} \n: "))
+	pts += a3
+	if a2 >= 5 or a3 <= 10:
+		print("Keep up the good work! \n")
+		pack()
+	else:
+		print("Try harder next time to stick to your goals")
+	with open('vview.csv', 'a') as vv:
+		vv.write(f"{datetime.datetime.now()},{pts}\n")
+def vhouse():
+	view1l = []
+	with open('vview.csv', 'r') as file:
+		csvr = csv.DictReader(file)
+		for row in csvr:
+			view1l.append(row)
+	for i in range(0,len(view1l)): 	
+		print(dataview(view1l[i]))
+		
+def pack():
+	print("You got a new pack!")
+	packl = []
+	cardlpc = []
+	with open('pack.txt', 'r') as file:
+		for line in file:
+			packl.append(line.strip('\n'))
+		z = random.randint(0,len(packl)-1)
+	with open('cardlistpc.txt', 'r') as file:
+		for line in file:
+			cardlpc.append(line)
+		print(f"New card added: {packl[z]}")
+		cardlpc.append(packl[z]+'\n')
+	with open('cardlistpc.txt', 'w') as file:
+		for x in cardlpc:
+			file.write(f"{x}")
+def phouseview():
+	print("Systems for progression based on input")
+	proglog = []
+	with open('plist.csv','r') as file:
+		csvr = csv.DictReader(file)
+		for line in csvr:
+			proglog.append(line)
+	print("-------Tasks------(1 = complete)")
+	for dictio in proglog:
+		print(f"{dictio['Task']} {dictio[' Completion Status']}")
+def phouse():
+	print("Systems for progression based on input")
+	proglog = []
+	proglist = []
+	with open('plist.csv','r') as file:
+		csvr = csv.DictReader(file)
+		for line in csvr:
+			proglog.append(line)
+		for i in proglog:
+			print(f'{i} {proglog.index(i)}')
+		edit = int(input("Which task was completed? \nEnter the number next to the line of the task\n :"))
+		proglog[edit][' Completion Status'] = 1
+		df = pd.DataFrame(proglog)
+		df.to_csv("plist.csv", index=False) #pandas takes dictionaries and converts it back to csv
+			
+		pack()
+def dungeon():
+	nothing = "The dungeon was normal today"
+	taunt = "Press d right now you won't"
+	dx = random.randint(0,4)
+	if dx == 3:
+		pack()
+	elif dx == 2:
+		print(taunt)
+	else:
+		print(nothing)
+def stockh():
+	plstock = []
+	rc = random.choice(['UP','DOWN','STEADY'])
+	with open('pack.txt','r') as file:
+		for line in file:
+			plstock.append(line)
+	r = random.randint(0,len(plstock)-1)
+	print("\n=================\n")
+	print(f"Rare Card Announcement: {plstock[r]} -+- STOCK {rc}")
+	print("=================\n")	
+def exp():
+	expd = [{'exp': 0,'level': 0}]
+	expr = []
+	with open('exp.csv','r') as file:
+		csvr = csv.DictReader(file)
+		for line in csvr:
+			expr.append(line)
+	expr[0]['exp'] = int(expr[0]['exp'])
+	expr[0]['exp'] += 250
+	print("\n\n==========You Gained  250 EXP=============\n")
+	if expr[0]['exp'] % 2000 == 0:
+		print("\n\n=============LEVEL UPPPPP=============")
+		expr[0]['level'] = int(expr[0]['level'])
+		expr[0]['level'] += 1
+		print(f"============{expr[0]['level']}===============")
+		pack()
+	df = pd.DataFrame(expr)
+	df.to_csv('exp.csv',index = False)
+def lvlshow():
+	with open('exp.csv','r') as file:
+		csvr = csv.DictReader(file)
+		for line in csvr:
+			print(line)
+def currbonus():
+	llist = []
+	datl = []
+	zstring = ''
+	timenow = str(datetime.datetime.now())[0:10]
+	with open('dat.csv','r') as d:
+		csvr = csv.DictReader(d)
+		for line in csvr:
+			datl.append(line)
+	with open('fmonthlast.csv','r') as file:
+		for line in file:
+			llist.append(line.strip('\n'))
+		if not datl:
+			for i in llist:
+				if timenow not in i[0:10]:
+					with open('dat.csv','a') as d:
+						d.write(f'0') #there were no transactions that day
+						print("CONGRATULATIONS YOU SPENT $0 TODAY")
+						print("You Gain EXP and a pack")
+						exp()
+						pack()
+			with open('dat.csv','a') as d:
+				d.write(f',{timenow}\n')
+				if timenow in i[0:10]:
+					with open('dat.csv','a') as d:
+						d.write(f'1')
+						print("You redeemed your bonus for the day")
+						print("You Do Not Gain EXP") #subtracts the total gained to make 0
+		if datl and datl[0]['date'] != timenow:
+			with open('dat.csv','w') as d:
+				d.write("switch,date\n")
+				for i in llist:
+					zstring += '0'
+				d.write(f"{zstring},{timenow}\n")
+			print("CONGRATULATIONS YOU SPENT $0 TODAY")
+			print("You gain EXP and a pack")
+			exp()
+			pack()
+		else:
+			print("You already redeemed your exp bonus for the day")
 #tkinter functions
 def draw(cardlist):
 	root = tk.Tk()
@@ -182,95 +337,6 @@ def fwindow(kl, vl):
 	btn = tk.Button(root, text = "Close", command = root.destroy)
 	btn.pack()
 	root.mainloop()
-def qvshow():
-	quiz1 = []
-	pts = 0
-	with open('v.csv', 'r') as file:
-		csvr = csv.DictReader(file)
-		for row in csvr:
-			quiz1.append(row)
-	a1 = input(f"{quiz1[0]['Question']} (y/n)")
-	if a1 == 'y':
-		pts += 1
-	a2 = int(input(f"{quiz1[1]['Question']} \n: "))
-	pts += a2
-	a3 = int(input(f"{quiz1[2]['Question']} \n: "))
-	pts += a3
-	if a2 >= 5 or a3 <= 10:
-		print("Keep up the good work! \n")
-		pack()
-	else:
-		print("Try harder next time to stick to your goals")
-	with open('vview.csv', 'a') as vv:
-		vv.write(f"{datetime.datetime.now()},{pts}\n")
-def vhouse():
-	view1l = []
-	with open('vview.csv', 'r') as file:
-		csvr = csv.DictReader(file)
-		for row in csvr:
-			view1l.append(row)
-	for i in range(0,len(view1l)): 	
-		print(dataview(view1l[i]))
-		
-def pack():
-	print("You got a new pack!")
-	packl = []
-	cardlpc = []
-	with open('pack.txt', 'r') as file:
-		for line in file:
-			packl.append(line.strip('\n'))
-		z = random.randint(0,len(packl))
-	with open('cardlistpc.txt', 'r') as file:
-		for line in file:
-			cardlpc.append(line)
-		print(f"New card added: {packl[z]}")
-		cardlpc.append(packl[z]+'\n')
-	with open('cardlistpc.txt', 'w') as file:
-		for x in cardlpc:
-			file.write(f"{x}")
-def phouseview():
-	print("Systems for progression based on input")
-	proglog = []
-	with open('plist.csv','r') as file:
-		csvr = csv.DictReader(file)
-		for line in csvr:
-			proglog.append(line)
-	print("-------Tasks------(1 = complete)")
-	for dictio in proglog:
-		print(f"{dictio['Task']} {dictio[' Completion Status']}")
-def phouse():
-	print("Systems for progression based on input")
-	proglog = []
-	proglist = []
-	with open('plist.csv','r') as file:
-		csvr = csv.DictReader(file)
-		for line in csvr:
-			proglog.append(line)
-		for i in proglog:
-			print(f'{i} {proglog.index(i)}')
-		edit = int(input("Which task was completed? \nEnter the number next to the line of the task\n :"))
-		proglog[edit][' Completion Status'] = 1
-		df = pd.DataFrame(proglog)
-		df.to_csv("plist.csv", index=False) #pandas takes dictionaries and converts it back to csv
-			
-		pack()
-def dungeon():
-	nothing = "The dungeon was normal today"
-	taunt = "Press d right now you won't"
-	dx = random.randint(0,4)
-	if dx == 3:
-		pack()
-	elif dx == 2:
-		print(taunt)
-	else:
-		print(nothing)
-def stockh():
-	print("Can you solve the mystery in the code?")
-	print("What is special about the twin Dragons?")
-	print("Submit your answer...on the Github")
-	with open('sh.csv','r') as file:
-		for line in file:
-			print(line)
 #matplotlib functions
 def fplot(listx, listy):
 	plt.figure(figsize=(8,5))
@@ -358,10 +424,13 @@ while run:
 			if event.key == pygame.K_LEFT:
 				charx -= 10
 			if event.key == pygame.K_RSHIFT:
+				numcards = []
 				print("--------Cardlist---------")
 				with open('cardlistpc.txt','r') as file:
 					for line in file:
+						numcards.append(line)
 						print(line)
+				print(f"You have {len(numcards)} cards")
 			if event.key == pygame.K_LSHIFT:
 				transact()
 			if event.key == pygame.K_s:
@@ -378,6 +447,7 @@ while run:
 				if today.weekday() >= 5:
 					print("It's the weekend, let's check if we should spend or save today")
 					pack()
+				currbonus()
 			if event.key == pygame.K_d:
 				try:
 					draw(cardlistread())		
@@ -394,14 +464,20 @@ while run:
 				qvshow()
 			if event.key == pygame.K_t:
 				phouse()
+			if event.key == pygame.K_a:
+				transact()
+			if event.key == pygame.K_e:
+				finput()
 		if event.type == pygame.MOUSEBUTTONDOWN:
 			print("Click")
 			print(f"Mouse pos: {mx},{my}")
+			lvlshow()
 			print(bitslm)
 			
 			if h1.collidepoint(mx, my):
 				print("Finance House")
 				fhouse()
+				exp()
 				gameover()
 				
 			if h2.collidepoint(mx, my):
@@ -415,11 +491,14 @@ while run:
 				print("Press q for the quiz to earn a pack \n")
 				print("Here are your previous quiz results: ")
 				vhouse()
+				exp()
 				
 			if h4.collidepoint(mx, my):
 				print("Progression House")
 				print("Press t to update task completion")
 				phouseview()
+				exp()
+				
 			if h5.collidepoint(mx, my):
 				print("Dungeon")
 				dungeon()
