@@ -20,6 +20,7 @@ pygame
 
 tkinter
 
+Beautiful Soup (bs4) (Coming Soon!)
 
 #pygame
 
