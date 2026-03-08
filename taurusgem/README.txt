@@ -22,7 +22,7 @@ Vest House - Previous Pack Quiz Results (Press Q)
 Progession House - View task list
 Dungeon - Chance to drop a pack or meet John
 Stock Market House - Find out which cards are rare today
-Cave - Check the amount of cards owned
+Cave - Check the amount of cards owned (click on the cave)
 
 Load your finances to view by modifying the appropriate values on the included finances csv sheets, along with the fmonth1 csv that allows for real time tracking and financial input.
 
