@@ -13,4 +13,4 @@ John: You're going down!
 Luiz: John got some kinda vendetta against you or something?
 Ruiz: You want a free card? Just kidding
 Tim: My favorite card is Celestial Dragon
-Sherry: The accountant has total up accrued bits, so your virutal currency may not appear immediately
+Sherry: The accountant has to total up accrued bits, so your virutal currency may not appear immediately

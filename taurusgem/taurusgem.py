@@ -20,6 +20,7 @@ import pygame
 #tkinter
 import tkinter as tk
 from tktut import window
+#bs4 not listed up here as it is optional
 #gemini
 #pygame
 pygame.init()
@@ -89,7 +90,7 @@ def cardshop():
 	with open('cardshopl.csv', 'r') as file:
 		for line in file:
 			cardl.append(line.strip('\n'))
-		x = random.randint(0,len(cardl))
+		x = random.randint(0,len(cardl)-1)
 		cardadd.append(cardl[x])
 	with open('cardlistpc.txt', 'r') as file:
 		for line in file:
@@ -241,7 +242,7 @@ def lvlshow():
 		csvr = csv.DictReader(file)
 		for line in csvr:
 			print(line)
-def currbonus():
+def currbonus(): #0 dollars spent daily bonus exp and pack
 	llist = []
 	datl = []
 	zstring = ''
@@ -281,6 +282,57 @@ def currbonus():
 			pack()
 		else:
 			print("You already redeemed your exp bonus for the day")
+def cardcheck():
+	cl = []
+	with open('cardlistpc.txt','r') as file:
+		for line in file:
+			cl.append(line.strip('\n'))
+	dl = []
+	b = set()
+	for i in cl:
+		b.add(i) 
+	for i in sorted(b):
+		d = {i : f'x{cl.count(i)}'}
+		dl.append(d)
+	print("Here is how many cards you have: ")
+	for i in dl:
+		print(i)
+#bs4 Beautiful Soup functions
+def grabber(): #online download information functionality paired with site
+	try:
+		import requests
+		from bs4 import BeautifulSoup
+		
+		site = "https://kutamone.github.io/liquidsite"
+		html_page = requests.get(site).text
+		soup = BeautifulSoup(html_page, "lxml")
+		tag = soup.h1
+		ptags = soup.p
+		print(tag.string)
+		print(soup.h2.string)
+		card = str(soup.find(id="card").string)
+		code = soup.find(id="code").string
+		def codematch(code): #checks if code is in webcode file
+			cl = []
+			with open('webcode.csv','r') as w:
+				for line in w:
+					cl.append(line.strip('\n'))
+			if not cl or code not in cl:
+				with open('webcode.csv','a') as w:
+					w.write(f"{code}\n")
+					return True
+			else:
+				print("Download redeemed")
+				return False
+		if codematch(code):
+			l = [i.string for i in soup.find_all(id="card")] #gets all cards under cards available
+			print(f"New Cards Added from the Download List: {l}")
+			with open('cardlistpc.txt','a') as file:
+				for i in l:
+					file.write(f'{i}\n')
+	except OSError as e:
+		print("Turn on wifi to get updates")
+		pass	
 #tkinter functions
 def draw(cardlist):
 	root = tk.Tk()
@@ -376,6 +428,7 @@ h3name = font.render('Vest House', True, 'white')
 h4name = font.render('Progression House', True, 'white')
 h5name = font.render('Dungeon', True, 'white')
 h6name = font.render('Stock Market House', True, 'white')
+h7name = font.render('Cave', True, 'white')
 
 run = True
 while run:
@@ -411,6 +464,10 @@ while run:
 	h6 = pygame.Rect(573,536,50,50)
 	#pygame.draw.rect(screen, blk, (573,536,50,50))#h6
 	
+	screen.blit(h7name, (40,346))
+	h7 = pygame.Rect(40,346,125,125)
+	#pygame.draw.rect(screen, blk, (40,346,125,125))#h7
+	
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			run = False
@@ -434,20 +491,28 @@ while run:
 			if event.key == pygame.K_LSHIFT:
 				transact()
 			if event.key == pygame.K_s:
+				dtrack = []
 				dt = str(datetime.datetime.now())
-				with open('savedate.txt', 'w') as f:
-					f.write(dt)
 				print("Welcome to Liquidity World!")
 				print(f"Today is {dt}")
-				dtl = list(dt)
-				if dtl[8] == str(1) and dtl[9] == str(3): #13th of the month
-					 print("Special Pack Opening Day today on the 13th!")
-					 pack()
-				today = datetime.datetime.today()
-				if today.weekday() >= 5:
-					print("It's the weekend, let's check if we should spend or save today")
-					pack()
-				currbonus()
+				grabber()
+				with open('savedate.txt','r') as f:
+					for line in f:
+						dtrack.append(line.strip('\n'))
+				if dtrack[0][0:10] == dt[0:10]:
+					print("Packs redeemed for the day")
+				else:
+					with open('savedate.txt', 'w') as f:
+						f.write(dt)
+					dtl = list(dt)
+					if dtl[8] == str(1) and dtl[9] == str(3): #13th of the month
+						 print("Special Pack Opening Day today on the 13th!")
+						 pack()
+					today = datetime.datetime.today()
+					if today.weekday() >= 5:
+						print("It's the weekend, let's check if we should spend or save today")
+						pack()
+					currbonus()
 			if event.key == pygame.K_d:
 				try:
 					draw(cardlistread())		
@@ -506,7 +571,11 @@ while run:
 			if h6.collidepoint(mx, my): #ai
 				print("Stock Market House")
 				stockh()
-						
+				
+			if h7.collidepoint(mx, my):
+				print("Cave")
+				cardcheck()	
+					
 		if event.type == pygame.MOUSEBUTTONUP:
 			npclines()
 		if event.type == pygame.MOUSEWHEEL:

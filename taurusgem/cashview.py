@@ -86,7 +86,7 @@ def tview2():
 		plt.grid(axis='y', linestyle= '--', alpha=0.7)
 		plt.show()
 def finput():
-	choos = input("Would you like to edit savings numbers, monthly numbers or weekdays? [Enter 1, 2, or 3]")
+	choos = input("Would you like to edit savings numbers, monthly numbers or weekdays? [Enter 1, 2, or 3] \n:")
 	if choos == '1':
 		print("Enter your Savings, Spending, Equity and Investments: ")
 		f1 = [int(input(": ")) for i in range(0,4)]
