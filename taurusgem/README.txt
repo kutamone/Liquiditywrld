@@ -14,6 +14,7 @@ Q - Finance Quiz for Card Pack
 T - Update tasklist
 A - Enter a transaction
 E - Update Savings Information
+C - Check amount of cards owned
 ---------
 Click on Doors
 Finance House - View Finance Overview from included csv files
