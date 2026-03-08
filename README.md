@@ -1,4 +1,4 @@
-# Liquidity World v.0.0.3
+# Liquidity World v.0.0.4
 2D Financial Game Sim with Gemini 3 API
 
 #prerequisites
@@ -20,7 +20,7 @@ pygame
 
 tkinter
 
-Beautiful Soup (bs4) (Coming Soon!)
+Beautiful Soup (bs4) (optional)
 
 #pygame
 
