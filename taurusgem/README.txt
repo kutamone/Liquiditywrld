@@ -1,4 +1,4 @@
-Liquidity World v0.0.3
+Liquidity World v0.0.4
 
 View your finances in a 2D game world featuring the Card Unite minigame. Click on different doors to view financial information and play a fun game at the same time. The virtual world and real world meet in this finance sim.
 
